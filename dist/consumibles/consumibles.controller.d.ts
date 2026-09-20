@@ -5,22 +5,22 @@ export declare class ConsumiblesController {
     private readonly consumiblesService;
     constructor(consumiblesService: ConsumiblesService);
     entrada(dto: EntradaConsumibleDto): Promise<{
-        id: string;
-        cantidad: number;
         tipo: import("@prisma/client").$Enums.TipoMovimiento;
-        fecha: Date;
+        id: string;
+        itemId: string;
+        cantidad: number;
         solicitante: string | null;
         observacion: string | null;
-        itemId: string;
+        fecha: Date;
     }>;
     salida(dto: SalidaConsumibleDto): Promise<{
-        id: string;
-        cantidad: number;
         tipo: import("@prisma/client").$Enums.TipoMovimiento;
-        fecha: Date;
+        id: string;
+        itemId: string;
+        cantidad: number;
         solicitante: string | null;
         observacion: string | null;
-        itemId: string;
+        fecha: Date;
     }>;
     stock(): Promise<{
         itemId: string;

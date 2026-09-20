@@ -6,22 +6,22 @@ export declare class ConsumiblesService {
     constructor(prisma: PrismaService);
     private calcularStock;
     registrarEntrada(dto: EntradaConsumibleDto): Promise<{
-        id: string;
-        cantidad: number;
         tipo: import("@prisma/client").$Enums.TipoMovimiento;
-        fecha: Date;
+        id: string;
+        itemId: string;
+        cantidad: number;
         solicitante: string | null;
         observacion: string | null;
-        itemId: string;
+        fecha: Date;
     }>;
     registrarSalida(dto: SalidaConsumibleDto): Promise<{
-        id: string;
-        cantidad: number;
         tipo: import("@prisma/client").$Enums.TipoMovimiento;
-        fecha: Date;
+        id: string;
+        itemId: string;
+        cantidad: number;
         solicitante: string | null;
         observacion: string | null;
-        itemId: string;
+        fecha: Date;
     }>;
     obtenerStock(): Promise<{
         itemId: string;

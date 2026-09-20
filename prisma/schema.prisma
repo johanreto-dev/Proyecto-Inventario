@@ -107,3 +107,8 @@ model Ensamblaje {
 
   receta            Receta    @relation(fields: [recetaId], references: [id])
 }
+
+model ContadorEquipo {
+  id          Int @id @default(1)
+  ultimoValor Int @default(0)
+}
