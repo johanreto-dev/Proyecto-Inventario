@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  postgres_db:
+    image: postgres:16
+    container_name: inventario_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: johan_admin
+      POSTGRES_PASSWORD: inventario2026
+      POSTGRES_DB: inventario_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

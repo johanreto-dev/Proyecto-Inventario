@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TipoItem {
+  CONSUMIBLE
+  EQUIPO
+}
+
+enum MetodoSeguimiento {
+  SERIE_MANUAL
+  ID_AUTOMATICO
+}
+
+enum EstadoUnidad {
+  DISPONIBLE
+  BAJA
+}
+
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+}
+
+model Item {
+  id                 String              @id @default(uuid())
+  categoria          String
+  marca              String
+  modelo             String
+  nombre             String              @unique
+  tipo               TipoItem
+  metodoSeguimiento  MetodoSeguimiento?
+  createdAt          DateTime            @default(now())
+
+  unidadesEquipo         UnidadEquipo[]
+  movimientosConsumible  MovimientoConsumible[]
+  recetaItems            RecetaItem[]
+}
+
+model UnidadEquipo {
+  id            String        @id @default(uuid())
+  itemId        String
+  numeroSerie   String        @unique
+  estado        EstadoUnidad  @default(DISPONIBLE)
+  createdAt     DateTime      @default(now())
+
+  item          Item                @relation(fields: [itemId], references: [id])
+  movimientos   MovimientoEquipo[]
+}
+
+model MovimientoEquipo {
+  id              String          @id @default(uuid())
+  unidadEquipoId  String
+  tipo            TipoMovimiento
+  fecha           DateTime        @default(now())
+  destino         String?
+  observacion     String?
+
+  unidadEquipo    UnidadEquipo    @relation(fields: [unidadEquipoId], references: [id])
+}
+
+model MovimientoConsumible {
+  id            String          @id @default(uuid())
+  itemId        String
+  cantidad      Int
+  tipo          TipoMovimiento
+  fecha         DateTime        @default(now())
+  solicitante   String?
+  observacion   String?
+
+  item          Item            @relation(fields: [itemId], references: [id])
+}
+
+model Receta {
+  id            String        @id @default(uuid())
+  nombre        String        @unique
+  createdAt     DateTime      @default(now())
+
+  items         RecetaItem[]
+  ensamblajes   Ensamblaje[]
+}
+
+model RecetaItem {
+  id                  String   @id @default(uuid())
+  recetaId            String
+  itemId              String
+  cantidadNecesaria   Int
+
+  receta              Receta   @relation(fields: [recetaId], references: [id])
+  item                Item     @relation(fields: [itemId], references: [id])
+
+  @@unique([recetaId, itemId])
+}
+
+model Ensamblaje {
+  id                String    @id @default(uuid())
+  recetaId          String
+  cantidadArmada    Int
+  destino           String?
+  observacion       String?
+  fecha             DateTime  @default(now())
+
+  receta            Receta    @relation(fields: [recetaId], references: [id])
+}
