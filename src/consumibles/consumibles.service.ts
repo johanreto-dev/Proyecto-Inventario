@@ -7,6 +7,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { TipoMovimiento } from "@prisma/client";
 import { EntradaConsumibleDto } from "./dto/entrada-consumible.dto";
 import { SalidaConsumibleDto } from "./dto/salida-consumible.dto";
+import { EditarMovimientoConsumibleDto } from "./dto/editar-movimiento-consumible.dto";
 
 @Injectable()
 export class ConsumiblesService {
@@ -101,5 +102,29 @@ export class ConsumiblesService {
     );
 
     return stockPorItem;
+  }
+  async editarMovimiento(id: string, dto: EditarMovimientoConsumibleDto) {
+    const movimiento = await this.prisma.movimientoConsumible.findUnique({
+      where: { id },
+    });
+    if (!movimiento) {
+      throw new NotFoundException("Movimiento no encontrado");
+    }
+
+    // Solo se permite corregir solicitante/observación — fecha y cantidad son inmutables
+    return this.prisma.movimientoConsumible.update({
+      where: { id },
+      data: {
+        solicitante: dto.solicitante ?? movimiento.solicitante,
+        observacion: dto.observacion ?? movimiento.observacion,
+      },
+    });
+  }
+  async listarMovimientos() {
+    return this.prisma.movimientoConsumible.findMany({
+      include: { item: true },
+      orderBy: { fecha: "desc" },
+      take: 50,
+    });
   }
 }

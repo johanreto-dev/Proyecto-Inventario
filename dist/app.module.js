@@ -12,12 +12,21 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const items_module_1 = require("./items/items.module");
 const consumibles_module_1 = require("./consumibles/consumibles.module");
 const equipos_module_1 = require("./equipos/equipos.module");
+const recetas_module_1 = require("./recetas/recetas.module");
+const ensamblajes_module_1 = require("./ensamblajes/ensamblajes.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, items_module_1.ItemsModule, consumibles_module_1.ConsumiblesModule, equipos_module_1.EquiposModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            items_module_1.ItemsModule,
+            consumibles_module_1.ConsumiblesModule,
+            equipos_module_1.EquiposModule,
+            recetas_module_1.RecetasModule,
+            ensamblajes_module_1.EnsamblajesModule,
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

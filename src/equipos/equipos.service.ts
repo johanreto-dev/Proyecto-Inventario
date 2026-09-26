@@ -11,6 +11,7 @@ import {
 } from "@prisma/client";
 import { EntradaEquipoDto } from "./dto/entrada-equipo.dto";
 import { SalidaEquipoDto } from "./dto/salida-equipo.dto";
+import { EditarMovimientoEquipoDto } from "./dto/editar-movimiento-equipo.dto";
 
 @Injectable()
 export class EquiposService {
@@ -142,7 +143,7 @@ export class EquiposService {
 
   async resumenPorModelo() {
     const items = await this.prisma.item.findMany({
-      where: { tipo: "EQUIPO" },
+      where: { tipo: "EQUIPO", activo: true },
       orderBy: { nombre: "asc" },
     });
 
@@ -151,16 +152,44 @@ export class EquiposService {
         const disponibles = await this.prisma.unidadEquipo.count({
           where: { itemId: item.id, estado: EstadoUnidad.DISPONIBLE },
         });
-        return { itemId: item.id, nombre: item.nombre, disponibles };
+        return {
+          itemId: item.id,
+          nombre: item.nombre,
+          metodoSeguimiento: item.metodoSeguimiento,
+          disponibles,
+        };
       }),
     );
   }
 
   async unidadesPorItem(itemId: string) {
-    return this.prisma.unidadEquipo.findMany({
+    const item = await this.prisma.item.findUnique({ where: { id: itemId } });
+    if (!item) {
+      throw new NotFoundException("Ítem no encontrado");
+    }
+
+    const unidades = await this.prisma.unidadEquipo.findMany({
       where: { itemId },
       include: { movimientos: { orderBy: { fecha: "desc" } } },
       orderBy: { createdAt: "asc" },
+    });
+
+    return { item, unidades };
+  }
+  async editarMovimiento(id: string, dto: EditarMovimientoEquipoDto) {
+    const movimiento = await this.prisma.movimientoEquipo.findUnique({
+      where: { id },
+    });
+    if (!movimiento) {
+      throw new NotFoundException("Movimiento no encontrado");
+    }
+
+    return this.prisma.movimientoEquipo.update({
+      where: { id },
+      data: {
+        destino: dto.destino ?? movimiento.destino,
+        observacion: dto.observacion ?? movimiento.observacion,
+      },
     });
   }
 }

@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const equipos_service_1 = require("./equipos.service");
 const entrada_equipo_dto_1 = require("./dto/entrada-equipo.dto");
 const salida_equipo_dto_1 = require("./dto/salida-equipo.dto");
+const editar_movimiento_equipo_dto_1 = require("./dto/editar-movimiento-equipo.dto");
 let EquiposController = class EquiposController {
     constructor(equiposService) {
         this.equiposService = equiposService;
@@ -33,18 +34,21 @@ let EquiposController = class EquiposController {
     unidades(itemId) {
         return this.equiposService.unidadesPorItem(itemId);
     }
+    editarMovimiento(id, dto) {
+        return this.equiposService.editarMovimiento(id, dto);
+    }
 };
 exports.EquiposController = EquiposController;
 __decorate([
     (0, common_1.Post)("entrada"),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [entrada_equipo_dto_1.EntradaEquipoDto]),
     __metadata("design:returntype", void 0)
 ], EquiposController.prototype, "entrada", null);
 __decorate([
     (0, common_1.Post)("salida"),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [salida_equipo_dto_1.SalidaEquipoDto]),
     __metadata("design:returntype", void 0)
@@ -62,6 +66,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], EquiposController.prototype, "unidades", null);
+__decorate([
+    (0, common_1.Patch)("movimientos/:id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, editar_movimiento_equipo_dto_1.EditarMovimientoEquipoDto]),
+    __metadata("design:returntype", void 0)
+], EquiposController.prototype, "editarMovimiento", null);
 exports.EquiposController = EquiposController = __decorate([
     (0, common_1.Controller)("equipos"),
     __metadata("design:paramtypes", [equipos_service_1.EquiposService])

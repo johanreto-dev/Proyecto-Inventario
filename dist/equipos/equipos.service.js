@@ -116,21 +116,46 @@ let EquiposService = class EquiposService {
     }
     async resumenPorModelo() {
         const items = await this.prisma.item.findMany({
-            where: { tipo: "EQUIPO" },
+            where: { tipo: "EQUIPO", activo: true },
             orderBy: { nombre: "asc" },
         });
         return Promise.all(items.map(async (item) => {
             const disponibles = await this.prisma.unidadEquipo.count({
                 where: { itemId: item.id, estado: client_1.EstadoUnidad.DISPONIBLE },
             });
-            return { itemId: item.id, nombre: item.nombre, disponibles };
+            return {
+                itemId: item.id,
+                nombre: item.nombre,
+                metodoSeguimiento: item.metodoSeguimiento,
+                disponibles,
+            };
         }));
     }
     async unidadesPorItem(itemId) {
-        return this.prisma.unidadEquipo.findMany({
+        const item = await this.prisma.item.findUnique({ where: { id: itemId } });
+        if (!item) {
+            throw new common_1.NotFoundException("Ítem no encontrado");
+        }
+        const unidades = await this.prisma.unidadEquipo.findMany({
             where: { itemId },
             include: { movimientos: { orderBy: { fecha: "desc" } } },
             orderBy: { createdAt: "asc" },
+        });
+        return { item, unidades };
+    }
+    async editarMovimiento(id, dto) {
+        const movimiento = await this.prisma.movimientoEquipo.findUnique({
+            where: { id },
+        });
+        if (!movimiento) {
+            throw new common_1.NotFoundException("Movimiento no encontrado");
+        }
+        return this.prisma.movimientoEquipo.update({
+            where: { id },
+            data: {
+                destino: dto.destino ?? movimiento.destino,
+                observacion: dto.observacion ?? movimiento.observacion,
+            },
         });
     }
 };

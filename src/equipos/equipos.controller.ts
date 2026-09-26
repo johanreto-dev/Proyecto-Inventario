@@ -1,26 +1,20 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  ValidationPipe,
-} from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { EquiposService } from "./equipos.service";
 import { EntradaEquipoDto } from "./dto/entrada-equipo.dto";
 import { SalidaEquipoDto } from "./dto/salida-equipo.dto";
+import { EditarMovimientoEquipoDto } from "./dto/editar-movimiento-equipo.dto";
 
 @Controller("equipos")
 export class EquiposController {
   constructor(private readonly equiposService: EquiposService) {}
 
   @Post("entrada")
-  entrada(@Body(ValidationPipe) dto: EntradaEquipoDto) {
+  entrada(@Body() dto: EntradaEquipoDto) {
     return this.equiposService.registrarEntrada(dto);
   }
 
   @Post("salida")
-  salida(@Body(ValidationPipe) dto: SalidaEquipoDto) {
+  salida(@Body() dto: SalidaEquipoDto) {
     return this.equiposService.registrarSalida(dto);
   }
 
@@ -32,5 +26,13 @@ export class EquiposController {
   @Get(":itemId/unidades")
   unidades(@Param("itemId") itemId: string) {
     return this.equiposService.unidadesPorItem(itemId);
+  }
+
+  @Patch("movimientos/:id")
+  editarMovimiento(
+    @Param("id") id: string,
+    @Body() dto: EditarMovimientoEquipoDto,
+  ) {
+    return this.equiposService.editarMovimiento(id, dto);
   }
 }

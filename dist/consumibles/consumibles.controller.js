@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const consumibles_service_1 = require("./consumibles.service");
 const entrada_consumible_dto_1 = require("./dto/entrada-consumible.dto");
 const salida_consumible_dto_1 = require("./dto/salida-consumible.dto");
+const editar_movimiento_consumible_dto_1 = require("./dto/editar-movimiento-consumible.dto");
 let ConsumiblesController = class ConsumiblesController {
     constructor(consumiblesService) {
         this.consumiblesService = consumiblesService;
@@ -30,18 +31,24 @@ let ConsumiblesController = class ConsumiblesController {
     stock() {
         return this.consumiblesService.obtenerStock();
     }
+    editarMovimiento(id, dto) {
+        return this.consumiblesService.editarMovimiento(id, dto);
+    }
+    movimientos() {
+        return this.consumiblesService.listarMovimientos();
+    }
 };
 exports.ConsumiblesController = ConsumiblesController;
 __decorate([
     (0, common_1.Post)("entrada"),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [entrada_consumible_dto_1.EntradaConsumibleDto]),
     __metadata("design:returntype", void 0)
 ], ConsumiblesController.prototype, "entrada", null);
 __decorate([
     (0, common_1.Post)("salida"),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [salida_consumible_dto_1.SalidaConsumibleDto]),
     __metadata("design:returntype", void 0)
@@ -52,6 +59,20 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConsumiblesController.prototype, "stock", null);
+__decorate([
+    (0, common_1.Patch)("movimientos/:id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, editar_movimiento_consumible_dto_1.EditarMovimientoConsumibleDto]),
+    __metadata("design:returntype", void 0)
+], ConsumiblesController.prototype, "editarMovimiento", null);
+__decorate([
+    (0, common_1.Get)("movimientos"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ConsumiblesController.prototype, "movimientos", null);
 exports.ConsumiblesController = ConsumiblesController = __decorate([
     (0, common_1.Controller)("consumibles"),
     __metadata("design:paramtypes", [consumibles_service_1.ConsumiblesService])

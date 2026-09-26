@@ -87,6 +87,29 @@ let ConsumiblesService = class ConsumiblesService {
         })));
         return stockPorItem;
     }
+    async editarMovimiento(id, dto) {
+        const movimiento = await this.prisma.movimientoConsumible.findUnique({
+            where: { id },
+        });
+        if (!movimiento) {
+            throw new common_1.NotFoundException("Movimiento no encontrado");
+        }
+        // Solo se permite corregir solicitante/observación — fecha y cantidad son inmutables
+        return this.prisma.movimientoConsumible.update({
+            where: { id },
+            data: {
+                solicitante: dto.solicitante ?? movimiento.solicitante,
+                observacion: dto.observacion ?? movimiento.observacion,
+            },
+        });
+    }
+    async listarMovimientos() {
+        return this.prisma.movimientoConsumible.findMany({
+            include: { item: true },
+            orderBy: { fecha: "desc" },
+            take: 50,
+        });
+    }
 };
 exports.ConsumiblesService = ConsumiblesService;
 exports.ConsumiblesService = ConsumiblesService = __decorate([
